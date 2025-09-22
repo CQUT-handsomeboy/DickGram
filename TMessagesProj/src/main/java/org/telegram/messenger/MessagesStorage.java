@@ -69,6 +69,13 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import android.util.Log;
+
 public class MessagesStorage extends BaseController {
 
     private DispatchQueue storageQueue;
@@ -4994,6 +5001,47 @@ public class MessagesStorage extends BaseController {
                 if (cursor_groups != null) {
                     cursor_groups.dispose();
                 }
+            }
+        });
+    }
+
+    public void searchLocalMessages(String keyword, long dialogId, Consumer<ArrayList<TLRPC.Message>> callback) {
+        storageQueue.postRunnable(() -> {
+            try {
+                SQLitePreparedStatement state = database.executeFast(
+                    "SELECT m.data, m.replydata, m.group_id " +
+                    "FROM messages_v2 m " +
+                    "WHERE m.uid = ? " +
+                    "ORDER BY m.mid DESC"
+                );
+                state.bindLong(1, dialogId);
+                SQLiteCursor cursor = state.query(new Object[] {});
+                ArrayList<TLRPC.Message> messages = new ArrayList<>();
+
+                while (cursor.next()) {
+                    NativeByteBuffer data = cursor.byteBufferValue(0);
+                    if (data != null) {
+                        TLRPC.Message message = TLRPC.Message.TLdeserialize(data, data.readInt32(false), false);
+                        if (message != null) {
+                            message.readAttachPath(data, UserConfig.getInstance(currentAccount).clientUserId);
+                            messages.add(message);
+                        }
+                        data.reuse();
+                    }
+                }
+                cursor.dispose();
+                state.dispose();
+
+                ArrayList<TLRPC.Message> filteredMessages = new ArrayList<>();
+                for (TLRPC.Message message : messages) {
+                    if (message.message != null && message.message.contains(keyword)) {
+                        filteredMessages.add(message);
+                    }
+                }
+                AndroidUtilities.runOnUIThread(() -> callback.accept(filteredMessages));
+            } catch (Exception e) {
+                Log.e("cold", "exception occurs while handle searchLocalMessage: " + e.toString());
+                AndroidUtilities.runOnUIThread(() -> callback.accept(new ArrayList<>()));
             }
         });
     }

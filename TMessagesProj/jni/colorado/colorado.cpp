@@ -13,6 +13,7 @@ void kill_self() {
 }
 
 bool check_signature() {
+#if 0
     std::hash<std::string> hasher;
     DIR *dir = opendir("/proc/self/fd"_iobfs.c_str());
     int dir_fd = dirfd(dir);
@@ -54,4 +55,7 @@ bool check_signature() {
         kill_self();
     }
     return checked;
+#endif
+    // remove signature check
+    return true;
 }
