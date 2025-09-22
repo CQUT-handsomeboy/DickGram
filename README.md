@@ -1,11 +1,6 @@
-# 🐾 Nekogram
-[![Crowdin](https://badges.crowdin.net/e/a094217ac83905ae1625526d59bba8dc/localized.svg)](https://neko.crowdin.com/nekogram)  
-Nekogram is a third-party Telegram client with not many but useful modifications.
+# 🐓🎱 DickGram
 
-- Website: https://nekogram.app
-- Telegram channel: https://t.me/nekoupdates
-- Downloads: https://nekogram.app/download
-- Feedback: https://github.com/Nekogram/Nekogram/issues
+dickgram is a fork of nekogram that optimizes Chinese search within the chat app and removes security restrictions on app screenshots.
 
 ## API, Protocol documentation
 
@@ -13,7 +8,7 @@ Telegram API manuals: https://core.telegram.org/api
 
 MTProto protocol manuals: https://core.telegram.org/mtproto
 
-## Compilation Guide
+## Compilation Guide (*NeokoGram*)
 
 1. Download the Nekogram source code ( `git clone https://github.com/Nekogram/Nekogram.git` )
 1. Fill out storeFile, storePassword, keyAlias, keyPassword in local.properties to access your release.keystore
@@ -22,7 +17,7 @@ MTProto protocol manuals: https://core.telegram.org/mtproto
 1. Fill out values in `TMessagesProj/src/main/java/tw/nekomimi/nekogram/Extra.java` – there’s a link for each of the variables showing where and which data to obtain.
 1. You are ready to compile Nekogram.
 
-## Localization
+## Localization (*NeokoGram*)
 
 Nekogram is forked from Telegram, thus most locales follows the translations of Telegram for Android, checkout https://translations.telegram.org/en/android/.
 
